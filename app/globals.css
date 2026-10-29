@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-page: #F7F4EC;
+    --bg-surface: #FFFCF5;
+    --bg-forest: #173B32;
+    --bg-deep-green: #092B25;
+    --bg-dark-section: #082A24;
+    --text-primary: #152F29;
+    --text-secondary: #686B64;
+    --accent-terracotta: #BE6543;
+    --accent-gold: #C8A66A;
+    --accent-sage: #8C967B;
+    --border-hairline: #DCD4C6;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-manrope), system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+}
+
+.font-editorial {
+  font-family: var(--font-cormorant), "DM Serif Display", Georgia, serif;
+}
+
+.font-body {
+  font-family: var(--font-manrope), system-ui, -apple-system, sans-serif;
+}
+
+.font-script {
+  font-family: var(--font-caveat), "Reenie Beanie", cursive;
+}
+
+/* Custom Hide Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom animations */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(1deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes orbitPlane {
+  0% {
+    transform: rotate(0deg) translateX(140px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(140px) rotate(-360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 36s linear infinite;
+}
+
+.animate-float {
+  animation: floatGentle 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.animate-orbit {
+  animation: orbitPlane 20s linear infinite;
+}
+
+/* Glassmorphism & backdrop filters */
+.glass-panel {
+  background: rgba(255, 252, 245, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(220, 212, 198, 0.7);
+}
+
+.glass-panel-dark {
+  background: rgba(9, 43, 37, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ========================================================
+   Smooth Luxury Scroll & Load Reveal Animation System
+   Applies smooth, graceful appear animations to all elements
+   ======================================================== */
+
+.reveal-element {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition-property: opacity, transform;
+  transition-duration: 0.95s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+.reveal-element.is-revealed {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Reveal scale variant for badges, stamps, avatars */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.92) translate3d(0, 18px, 0);
+  transition-property: opacity, transform;
+  transition-duration: 1s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-scale.is-revealed {
+  opacity: 1 !important;
+  transform: scale(1) translate3d(0, 0, 0) !important;
+}
+
+/* Reveal subtle horizontal slide for tags & eyebrows */
+.reveal-slide-left {
+  opacity: 0;
+  transform: translate3d(-24px, 0, 0);
+  transition-property: opacity, transform;
+  transition-duration: 0.9s;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-slide-left.is-revealed {
+  opacity: 1 !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+
+/* Fallback: if JavaScript is disabled or delayed */
+@media (scripting: none) {
+  .reveal-element,
+  .reveal-scale,
+  .reveal-slide-left {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
