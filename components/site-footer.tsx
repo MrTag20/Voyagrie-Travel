@@ -203,6 +203,7 @@ export const SiteFooter: React.FC = () => {
                     src={thumb}
                     alt={`Destination thumbnail ${i + 1}`}
                     fill
+                    sizes="48px"
                     className="object-cover"
                   />
                 </div>

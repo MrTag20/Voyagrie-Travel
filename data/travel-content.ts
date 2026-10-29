@@ -52,14 +52,7 @@ export const siteConfig = {
   phone: "+1 (646) 870-9033",
   phoneDisplay: "Call local expert",
   heroVideo: "/videos/hero-video.mp4",
-  heroVideoRaw: "/videos/Video%20Project%209.mp4",
-  heroVideoAlt: "/videos/Video Project 9.mp4",
-  heroVideoFallback: "/videos/hero-travel.mp4",
   heroPoster: "/images/hero-poster.webp",
-  rotatingGlobeVideo: "/videos/download.mp4",
-  rotatingGlobeVideoFallback: "/videos/rotating-earth.mp4",
-  rotatingGlobeGif: "/images/rotating-earth.gif",
-  rotatingGlobePoster: "/images/rotating-earth-poster.webp",
 };
 
 export const navLinks = [
@@ -202,42 +195,6 @@ export const trustStats = [
   { label: "Dedicated Support", value: "24/7" },
 ];
 
-export const whyVoyagrieData = {
-  eyebrow: "WHY CHOOSE VOYAGRIE",
-  headlinePrefix: "More Than a Trip,",
-  headlineMiddle: "A Better Way to",
-  headlineHighlight: "See the World.",
-  description: "We don't just plan trips — we craft meaningful experiences with local expertise, personalised planning and a passion for exploration.",
-  cta: "Our Story",
-  handwrittenPhrase: "Different Places, New Stories, Same You",
-  stampText: "EXPLORE • DREAM • DISCOVER",
-  benefits: [
-    {
-      id: "planning",
-      title: "Personalised Planning",
-      description: "Itineraries tailored to your style, pace and budget.",
-      icon: "CalendarDays",
-    },
-    {
-      id: "partners",
-      title: "Trusted Global Partners",
-      description: "Reliable services and local expertise worldwide.",
-      icon: "ShieldCheck",
-    },
-    {
-      id: "curated",
-      title: "Curated & Authentic Experiences",
-      description: "Handpicked destinations and unique activities.",
-      icon: "Mountain",
-    },
-    {
-      id: "support",
-      title: "24/7 Support",
-      description: "Assistance before, during and after your trip.",
-      icon: "Headphones",
-    },
-  ],
-};
 
 export const packageCategories = [
   "All",
@@ -401,16 +358,6 @@ export const testimonialsData: Testimonial[] = [
   },
 ];
 
-export const finalCtaData = {
-  eyebrow: "START YOUR JOURNEY",
-  headlinePrefix: "Ready to Explore",
-  headlineHighlight: "the World?",
-  description: "Let us create a journey that's uniquely yours. Discover, explore and make memories for a lifetime.",
-  primaryButton: "Plan Your Trip",
-  secondaryButton: "Talk to Our Expert",
-  videoButton: "Watch Full Video 1:30s",
-  backgroundImage: "/images/cta-background.webp",
-};
 
 export const footerData = {
   brandDescription: "Crafting extraordinary travel experiences across the globe. Your trusted partner in exploring the world.",

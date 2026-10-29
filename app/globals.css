@@ -44,81 +44,28 @@
   scrollbar-width: none;
 }
 
-/* Custom animations */
+/* Animations */
 @keyframes spinSlow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes floatGentle {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-6px) rotate(1deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.4;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes orbitPlane {
-  0% {
-    transform: rotate(0deg) translateX(140px) rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg) translateX(140px) rotate(-360deg);
-  }
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
 }
 
 .animate-spin-slow {
   animation: spinSlow 36s linear infinite;
 }
 
-.animate-float {
-  animation: floatGentle 6s ease-in-out infinite;
-}
-
 .animate-pulse-glow {
   animation: pulseGlow 4s ease-in-out infinite;
 }
 
-.animate-orbit {
-  animation: orbitPlane 20s linear infinite;
-}
-
-/* Glassmorphism & backdrop filters */
-.glass-panel {
-  background: rgba(255, 252, 245, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(220, 212, 198, 0.7);
-}
-
-.glass-panel-dark {
-  background: rgba(9, 43, 37, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Reduced motion support */
+/* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
+  *, ::before, ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -126,19 +73,12 @@
   }
 }
 
-/* ========================================================
-   Smooth Luxury Scroll & Load Reveal Animation System
-   Applies smooth, graceful appear animations to all elements
-   ======================================================== */
-
+/* Hardware-accelerated smooth entrance reveals */
 .reveal-element {
   opacity: 0;
-  transform: translate3d(0, 28px, 0);
-  transition-property: opacity, transform;
-  transition-duration: 0.95s;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
-  backface-visibility: hidden;
 }
 
 .reveal-element.is-revealed {
@@ -146,13 +86,10 @@
   transform: translate3d(0, 0, 0) !important;
 }
 
-/* Reveal scale variant for badges, stamps, avatars */
 .reveal-scale {
   opacity: 0;
-  transform: scale(0.92) translate3d(0, 18px, 0);
-  transition-property: opacity, transform;
-  transition-duration: 1s;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(0.94) translate3d(0, 16px, 0);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -161,13 +98,10 @@
   transform: scale(1) translate3d(0, 0, 0) !important;
 }
 
-/* Reveal subtle horizontal slide for tags & eyebrows */
 .reveal-slide-left {
   opacity: 0;
-  transform: translate3d(-24px, 0, 0);
-  transition-property: opacity, transform;
-  transition-duration: 0.9s;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(-20px, 0, 0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform;
 }
 
@@ -176,7 +110,6 @@
   transform: translate3d(0, 0, 0) !important;
 }
 
-/* Fallback: if JavaScript is disabled or delayed */
 @media (scripting: none) {
   .reveal-element,
   .reveal-scale,

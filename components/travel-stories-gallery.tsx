@@ -10,12 +10,17 @@ import {
   ArrowRight,
   Camera,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import {
   travelStoriesData,
   storyCategories,
   TravelStory,
 } from "@/data/travel-content";
-import { LightboxModal } from "@/components/lightbox-modal";
+
+const LightboxModal = dynamic(
+  () => import("@/components/lightbox-modal").then((mod) => mod.LightboxModal),
+  { ssr: false }
+);
 
 export const TravelStoriesGallery: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -157,6 +162,7 @@ export const TravelStoriesGallery: React.FC = () => {
                     src={featuredStory.avatar}
                     alt={featuredStory.travellerName || "Traveller"}
                     fill
+                    sizes="44px"
                     className="object-cover"
                   />
                 </div>

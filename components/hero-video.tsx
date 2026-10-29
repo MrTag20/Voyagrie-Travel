@@ -38,15 +38,11 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({ onExplore }) => {
           muted
           loop
           playsInline
-          preload="auto"
-          src={siteConfig.heroVideo}
+          preload="metadata"
           poster={siteConfig.heroPoster}
           className="w-full h-full object-cover object-center scale-100"
         >
           <source src={siteConfig.heroVideo} type="video/mp4" />
-          <source src={siteConfig.heroVideoRaw} type="video/mp4" />
-          <source src={siteConfig.heroVideoAlt} type="video/mp4" />
-          <source src={siteConfig.heroVideoFallback} type="video/mp4" />
         </video>
       </div>
 
@@ -124,6 +120,7 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({ onExplore }) => {
                     src={avatar}
                     alt={`Traveller ${i + 1}`}
                     fill
+                    sizes="36px"
                     className="object-cover"
                   />
                 </div>

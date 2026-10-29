@@ -172,10 +172,14 @@ export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({
       });
     }, 100);
 
-    // MutationObserver to capture dynamic tab switching or new sections
+    // MutationObserver with debounce to handle dynamic tab switching efficiently
+    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
     const mutationObserver = new MutationObserver(() => {
-      autoTagElements();
-      observeAll();
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        autoTagElements();
+        observeAll();
+      }, 120);
     });
 
     mutationObserver.observe(document.body, {
@@ -185,6 +189,7 @@ export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return () => {
       clearTimeout(timer);
+      if (debounceTimer) clearTimeout(debounceTimer);
       observer.disconnect();
       mutationObserver.disconnect();
     };

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { HeroVideo } from "@/components/hero-video";
 import { TravelSearchPanel } from "@/components/travel-search-panel";
+import dynamic from "next/dynamic";
 import { DestinationStrip } from "@/components/destination-strip";
 import { TravelStatBar } from "@/components/travel-stat-bar";
 import { WhyTravelWithUs } from "@/components/why-travel-with-us";
@@ -13,10 +14,14 @@ import { TravelStoriesGallery } from "@/components/travel-stories-gallery";
 import { TestimonialCarousel } from "@/components/testimonial-carousel";
 import { ContactSection } from "@/components/contact-section";
 import { SiteFooter } from "@/components/site-footer";
-import { InquiryModal } from "@/components/inquiry-modal";
 import { FloatingActionButtons } from "@/components/floating-action-buttons";
 import { ScrollRevealProvider } from "@/components/scroll-reveal-provider";
 import { Destination, PackageItem } from "@/data/travel-content";
+
+const InquiryModal = dynamic(
+  () => import("@/components/inquiry-modal").then((mod) => mod.InquiryModal),
+  { ssr: false }
+);
 
 export default function HomePage() {
   const [inquiryOpen, setInquiryOpen] = useState(false);

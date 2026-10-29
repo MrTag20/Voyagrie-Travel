@@ -111,6 +111,7 @@ export const TestimonialCarousel: React.FC = () => {
                         src={item.avatar}
                         alt={item.name}
                         fill
+                        sizes="40px"
                         className="object-cover"
                       />
                     </div>
@@ -138,6 +139,7 @@ export const TestimonialCarousel: React.FC = () => {
                     src="/images/testimonial-group.webp"
                     alt="Happy Voyagrie Travellers"
                     fill
+                    sizes="(max-width: 640px) 90vw, 384px"
                     className="object-cover"
                   />
                 </div>
