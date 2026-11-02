@@ -42,9 +42,16 @@ export async function generateMetadata({
   };
 }
 
-export default async function DestinationPage({ params }: DestinationPageProps) {
+async function DestinationContent({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
+  return <DestinationDetailView destinationId={id} />;
+}
 
+export default function DestinationPage({ params }: DestinationPageProps) {
   return (
     <Suspense
       fallback={
@@ -53,7 +60,7 @@ export default async function DestinationPage({ params }: DestinationPageProps) 
         </div>
       }
     >
-      <DestinationDetailView destinationId={id} />
+      <DestinationContent params={params} />
     </Suspense>
   );
 }
