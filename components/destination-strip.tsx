@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,7 +10,6 @@ import {
   Clock,
   Star,
   ArrowRight,
-  MapPin,
 } from "lucide-react";
 import { destinationCards, Destination } from "@/data/travel-content";
 
@@ -103,8 +103,9 @@ export const DestinationStrip: React.FC<DestinationStripProps> = ({
           className="grid grid-flow-col auto-cols-[85%] sm:auto-cols-[48%] lg:auto-cols-[calc(33.333%-16px)] xl:auto-cols-[calc(25%-18px)] gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4"
         >
           {destinationCards.map((dest) => (
-            <div
+            <Link
               key={dest.id}
+              href={`/destinations/${dest.id}`}
               onClick={() => onSelectDestination?.(dest)}
               className="group bg-[#FFFCF5] rounded-3xl overflow-hidden border border-[#DCD4C6]/80 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer"
             >
@@ -180,7 +181,7 @@ export const DestinationStrip: React.FC<DestinationStripProps> = ({
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

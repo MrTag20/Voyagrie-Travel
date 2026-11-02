@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Plane, Search, Phone, Menu, X, ArrowRight } from "lucide-react";
 import { siteConfig, navLinks } from "@/data/travel-content";
 
@@ -10,40 +11,132 @@ interface SiteHeaderProps {
   onOpenSearch?: () => void;
 }
 
+const SECTION_IDS = ["hero", "destinations", "why-us", "services", "packages", "stories", "contact"];
+
 export const SiteHeader: React.FC<SiteHeaderProps> = ({
   onOpenInquiry,
   onOpenSearch,
 }) => {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("#hero");
 
+  // Determine initial active state based on route & hash
+  useEffect(() => {
+    if (pathname.startsWith("/destinations")) {
+      setActiveSection("#destinations");
+    } else if (pathname === "/") {
+      if (typeof window !== "undefined" && window.location.hash) {
+        setActiveSection(window.location.hash);
+      } else {
+        setActiveSection("#hero");
+      }
+    }
+  }, [pathname]);
+
+  // Scroll handler for header styling and scrollspy
   useEffect(() => {
     let ticking = false;
+
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          setIsScrolled(window.scrollY > 40);
+          const scrollY = window.scrollY;
+          setIsScrolled(scrollY > 40);
+
+          // Scrollspy on Home page only
+          if (pathname === "/") {
+            if (scrollY < 120) {
+              setActiveSection("#hero");
+            } else if (
+              window.innerHeight + scrollY >=
+              document.documentElement.scrollHeight - 80
+            ) {
+              setActiveSection("#contact");
+            } else {
+              // Find the section that occupies viewport focus
+              for (let i = SECTION_IDS.length - 1; i >= 0; i--) {
+                const id = SECTION_IDS[i];
+                const el = document.getElementById(id);
+                if (el) {
+                  const rect = el.getBoundingClientRect();
+                  if (rect.top <= 220) {
+                    setActiveSection(`#${id}`);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+
           ticking = false;
         });
         ticking = true;
       }
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    // Run once on mount to establish position
+    handleScroll();
+
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
+
+  // Logo Click: Always scroll to top on home page, or navigate to home
+  const handleLogoClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (pathname === "/") {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setActiveSection("#hero");
+        if (window.location.hash) {
+          window.history.pushState(null, "", "/");
+        }
+      }
+    },
+    [pathname]
+  );
+
+  // Nav Link Click
+  const handleNavClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      if (pathname === "/") {
+        e.preventDefault();
+        if (href === "#hero") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          setActiveSection("#hero");
+          window.history.pushState(null, "", "/");
+        } else {
+          const targetId = href.replace("#", "");
+          const el = document.getElementById(targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+            setActiveSection(href);
+            window.history.pushState(null, "", href);
+          }
+        }
+      }
+    },
+    [pathname]
+  );
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-[#F7F4EC]/95 backdrop-blur-md shadow-xs py-3 border-b border-[#DCD4C6]/60"
-          : "bg-black/15 backdrop-blur-[3px] py-4 md:py-5 border-b border-white/10"
+          : "bg-black/20 backdrop-blur-[4px] py-4 md:py-5 border-b border-white/10"
       }`}
     >
       <div className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
+          {/* Brand Logo & Name */}
+          <Link
+            href="/"
+            onClick={handleLogoClick}
+            className="flex items-center gap-2.5 group cursor-pointer"
+          >
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
                 isScrolled
@@ -73,30 +166,41 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-7">
-            {navLinks.map((link, idx) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className={`text-[13px] tracking-wide font-medium transition-colors duration-200 relative py-1 ${
-                  isScrolled
-                    ? idx === 0
-                      ? "text-[#152F29] font-semibold"
-                      : "text-[#4A514B] hover:text-[#BE6543]"
-                    : idx === 0
-                    ? "text-white font-semibold drop-shadow-sm"
-                    : "text-white/85 hover:text-[#C8A66A] drop-shadow-sm"
-                }`}
-              >
-                {link.label}
-                {idx === 0 && (
-                  <span
-                    className={`absolute bottom-0 left-0 w-full h-[2px] rounded-full ${
-                      isScrolled ? "bg-[#BE6543]" : "bg-[#C8A66A]"
-                    }`}
-                  />
-                )}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href;
+              const linkHref =
+                pathname === "/"
+                  ? link.href
+                  : link.href === "#hero"
+                  ? "/"
+                  : `/${link.href}`;
+
+              return (
+                <a
+                  key={link.label}
+                  href={linkHref}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className={`text-[13px] tracking-wide transition-all duration-200 relative py-1 cursor-pointer ${
+                    isActive
+                      ? isScrolled
+                        ? "text-[#BE6543] font-semibold"
+                        : "text-white font-semibold drop-shadow-sm"
+                      : isScrolled
+                      ? "text-[#4A514B] hover:text-[#BE6543] font-medium"
+                      : "text-white/85 hover:text-[#C8A66A] drop-shadow-sm font-medium"
+                  }`}
+                >
+                  {link.label}
+                  {isActive && (
+                    <span
+                      className={`absolute bottom-0 left-0 w-full h-[2.5px] rounded-full transition-all duration-300 ${
+                        isScrolled ? "bg-[#BE6543]" : "bg-[#C8A66A]"
+                      }`}
+                    />
+                  )}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Right Action Items */}
@@ -106,7 +210,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
               type="button"
               onClick={onOpenSearch}
               aria-label="Search destinations or packages"
-              className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
                 isScrolled
                   ? "border border-[#DCD4C6] text-[#152F29] hover:bg-[#EEE8DC]"
                   : "border border-white/30 text-white hover:bg-white/20 backdrop-blur-xs"
@@ -155,7 +259,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
             <button
               type="button"
               onClick={onOpenInquiry}
-              className={`hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium tracking-wide shadow-sm transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 ${
+              className={`hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-medium tracking-wide shadow-sm transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer ${
                 isScrolled
                   ? "bg-[#173B32] text-[#F7F4EC] hover:bg-[#092B25]"
                   : "bg-[#BE6543] hover:bg-[#a85738] text-white shadow-md"
@@ -170,7 +274,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle mobile navigation menu"
-              className={`lg:hidden w-9 h-9 rounded-full flex items-center justify-center ${
+              className={`lg:hidden w-9 h-9 rounded-full flex items-center justify-center cursor-pointer ${
                 isScrolled
                   ? "border border-[#DCD4C6] text-[#152F29] hover:bg-[#EEE8DC]"
                   : "border border-white/30 text-white hover:bg-white/20"
@@ -189,21 +293,41 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#FFFCF5] border-b border-[#DCD4C6] px-6 py-6 shadow-xl animate-fadeIn text-[#152F29]">
-          <div className="flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-medium text-[#152F29] hover:text-[#BE6543] py-2 border-b border-[#EEE8DC]"
-              >
-                {link.label}
-              </a>
-            ))}
-            <div className="pt-2 flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href;
+              const linkHref =
+                pathname === "/"
+                  ? link.href
+                  : link.href === "#hero"
+                  ? "/"
+                  : `/${link.href}`;
+
+              return (
+                <a
+                  key={link.label}
+                  href={linkHref}
+                  onClick={(e) => {
+                    setMobileMenuOpen(false);
+                    handleNavClick(e, link.href);
+                  }}
+                  className={`text-sm py-2.5 px-3 rounded-xl border-b border-[#EEE8DC] flex items-center justify-between transition-colors ${
+                    isActive
+                      ? "font-semibold text-[#BE6543] bg-[#EEE8DC]/50"
+                      : "font-medium text-[#152F29] hover:text-[#BE6543]"
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  {isActive && (
+                    <span className="w-2 h-2 rounded-full bg-[#BE6543]" />
+                  )}
+                </a>
+              );
+            })}
+            <div className="pt-3 flex flex-col gap-3">
               <a
                 href={`tel:${siteConfig.phone.replace(/[^0-9+]/g, "")}`}
-                className="flex items-center gap-2 text-xs text-[#152F29] font-medium"
+                className="flex items-center gap-2 text-xs text-[#152F29] font-medium py-1"
               >
                 <Phone className="w-4 h-4 text-[#BE6543]" />
                 <span>
@@ -216,7 +340,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
                   setMobileMenuOpen(false);
                   onOpenInquiry?.();
                 }}
-                className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#173B32] text-[#F7F4EC] text-xs font-medium"
+                className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-[#173B32] text-[#F7F4EC] text-xs font-medium cursor-pointer"
               >
                 <span>Plan Your Trip</span>
                 <ArrowRight className="w-4 h-4" />

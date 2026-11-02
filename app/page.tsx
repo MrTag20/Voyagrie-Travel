@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { HeroVideo } from "@/components/hero-video";
 import { TravelSearchPanel } from "@/components/travel-search-panel";
@@ -24,6 +25,7 @@ const InquiryModal = dynamic(
 );
 
 export default function HomePage() {
+  const router = useRouter();
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState<string>("");
   const [selectedPackage, setSelectedPackage] = useState<string>("");
@@ -35,7 +37,7 @@ export default function HomePage() {
   };
 
   const handleDestinationSelect = (dest: Destination) => {
-    handleOpenInquiry(`${dest.name}, ${dest.region}`);
+    router.push(`/destinations/${dest.id}`);
   };
 
   const handlePackageSelect = (pkg: PackageItem) => {
