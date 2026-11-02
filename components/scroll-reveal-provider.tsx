@@ -4,8 +4,8 @@ import React, { useEffect } from "react";
 
 /**
  * ScrollRevealProvider
- * Smoothly animates every element, text, heading, card, and image as it enters the viewport.
- * Works across desktop, tablet, and mobile devices with zero scroll-jacking.
+ * High-performance hardware-accelerated entrance reveal system.
+ * Uses lightweight IntersectionObserver with zero scroll jank or main-thread blocking.
  */
 export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -16,66 +16,52 @@ export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
-      document.querySelectorAll(".reveal-element, .reveal-scale, .reveal-slide-left").forEach((el) => {
-        el.classList.add("is-revealed");
-      });
+      document
+        .querySelectorAll(".reveal-element, .reveal-scale, .reveal-slide-left")
+        .forEach((el) => {
+          el.classList.add("is-revealed");
+        });
       return;
     }
 
-    const observedElements = new WeakSet<Element>();
-
-    // Intelligent auto-tagging of key content elements across sections
-    const autoTagElements = () => {
-      // Find all sections on the page
+    // Auto-tag elements once cleanly without layout thrashing
+    const tagElements = () => {
       const sections = document.querySelectorAll("section, header, footer");
 
       sections.forEach((section) => {
         // Tag headings
-        const headings = section.querySelectorAll("h1, h2, h3");
-        headings.forEach((heading) => {
+        section.querySelectorAll("h1, h2, h3").forEach((heading) => {
           if (!heading.classList.contains("reveal-element") && !heading.classList.contains("is-revealed")) {
             heading.classList.add("reveal-element");
           }
         });
 
         // Tag eyebrow badges & pills
-        const eyebrows = section.querySelectorAll(
-          '[class*="tracking-[0.25em]"], [class*="tracking-widest"], .eyebrow'
-        );
-        eyebrows.forEach((eyebrow) => {
-          const parent = eyebrow.closest("div") || eyebrow;
-          if (!parent.classList.contains("reveal-slide-left") && !parent.classList.contains("is-revealed")) {
-            parent.classList.add("reveal-slide-left");
-          }
-        });
+        section
+          .querySelectorAll('[class*="tracking-[0.25em]"], [class*="tracking-widest"], .eyebrow')
+          .forEach((eyebrow) => {
+            const parent = eyebrow.closest("div") || eyebrow;
+            if (!parent.classList.contains("reveal-slide-left") && !parent.classList.contains("is-revealed")) {
+              parent.classList.add("reveal-slide-left");
+            }
+          });
 
-        // Tag descriptive paragraphs
-        const paragraphs = section.querySelectorAll("p");
-        paragraphs.forEach((p) => {
-          // Avoid tiny metadata inside buttons or badges
+        // Tag descriptive paragraphs (avoiding small button/card metadata)
+        section.querySelectorAll("p").forEach((p) => {
           if (
             !p.closest("button") &&
+            !p.closest("a") &&
             !p.classList.contains("reveal-element") &&
             !p.classList.contains("is-revealed")
           ) {
             p.classList.add("reveal-element");
-            // Gentle stagger after heading
-            if (!p.style.transitionDelay) {
-              p.style.transitionDelay = "120ms";
-            }
           }
         });
 
-        // Tag cards inside grids & carousels
-        const cardContainers = section.querySelectorAll(
-          '[class*="grid"], [class*="auto-cols-"], [class*="space-y-"]'
-        );
-
-        cardContainers.forEach((container) => {
-          const childrenList = Array.from(container.children);
-          childrenList.forEach((child, index) => {
+        // Tag cards inside grids
+        section.querySelectorAll('[class*="grid"], [class*="auto-cols-"]').forEach((container) => {
+          Array.from(container.children).forEach((child) => {
             const htmlChild = child as HTMLElement;
-            // Check if it looks like a card or item (has border, background, or rounded)
             if (
               htmlChild.classList.contains("group") ||
               htmlChild.getAttribute("class")?.includes("rounded-") ||
@@ -86,45 +72,16 @@ export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({
                 !htmlChild.classList.contains("is-revealed")
               ) {
                 htmlChild.classList.add("reveal-element");
-                // Stagger delay between sibling cards
-                const stagger = Math.min((index % 6) * 110, 550);
-                htmlChild.style.transitionDelay = `${stagger}ms`;
               }
             }
           });
         });
-
-        // Tag primary CTA buttons
-        const ctaButtons = section.querySelectorAll('button[class*="rounded-full"], a[class*="rounded-full"]');
-        ctaButtons.forEach((btn) => {
-          const htmlBtn = btn as HTMLElement;
-          if (
-            !htmlBtn.closest('[class*="group"]') &&
-            !htmlBtn.classList.contains("reveal-element") &&
-            !htmlBtn.classList.contains("is-revealed")
-          ) {
-            htmlBtn.classList.add("reveal-element");
-            if (!htmlBtn.style.transitionDelay) {
-              htmlBtn.style.transitionDelay = "180ms";
-            }
-          }
-        });
-
-        // Tag featured stamps & arched image cards
-        const visualCards = section.querySelectorAll('[class*="rounded-tr-"]');
-        visualCards.forEach((card) => {
-          const htmlCard = card as HTMLElement;
-          if (!htmlCard.classList.contains("reveal-scale") && !htmlCard.classList.contains("is-revealed")) {
-            htmlCard.classList.add("reveal-scale");
-          }
-        });
       });
     };
 
-    // Run auto-tagging
-    autoTagElements();
+    tagElements();
 
-    // Create IntersectionObserver with responsive margins
+    // IntersectionObserver runs off the main thread for 60fps scrolling
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -136,62 +93,24 @@ export const ScrollRevealProvider: React.FC<{ children: React.ReactNode }> = ({
       },
       {
         root: null,
-        // Trigger slightly before element enters to feel completely natural
-        rootMargin: "0px 0px -40px 0px",
+        rootMargin: "0px 0px -30px 0px",
         threshold: 0.05,
       }
     );
 
-    // Observe all tagged elements
-    const observeAll = () => {
-      const elements = document.querySelectorAll(
-        ".reveal-element:not(.is-revealed), .reveal-scale:not(.is-revealed), .reveal-slide-left:not(.is-revealed)"
-      );
+    const elements = document.querySelectorAll(
+      ".reveal-element:not(.is-revealed), .reveal-scale:not(.is-revealed), .reveal-slide-left:not(.is-revealed)"
+    );
+    elements.forEach((el) => observer.observe(el));
 
-      elements.forEach((el) => {
-        if (!observedElements.has(el)) {
-          observedElements.add(el);
-          observer.observe(el);
-        }
-      });
-    };
-
-    observeAll();
-
-    // Reveal above-the-fold elements gracefully after initial mount
-    const timer = setTimeout(() => {
-      const topElements = document.querySelectorAll(
-        "#hero .reveal-element, #hero .reveal-slide-left, #hero .reveal-scale"
-      );
-      topElements.forEach((el, i) => {
-        const htmlEl = el as HTMLElement;
-        if (!htmlEl.style.transitionDelay) {
-          htmlEl.style.transitionDelay = `${i * 120}ms`;
-        }
-        htmlEl.classList.add("is-revealed");
-      });
-    }, 100);
-
-    // MutationObserver with debounce to handle dynamic tab switching efficiently
-    let debounceTimer: ReturnType<typeof setTimeout> | null = null;
-    const mutationObserver = new MutationObserver(() => {
-      if (debounceTimer) clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        autoTagElements();
-        observeAll();
-      }, 120);
-    });
-
-    mutationObserver.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
+    // Reveal hero section immediately on mount without delay
+    const heroElements = document.querySelectorAll(
+      "#hero .reveal-element, #hero .reveal-slide-left, #hero .reveal-scale"
+    );
+    heroElements.forEach((el) => el.classList.add("is-revealed"));
 
     return () => {
-      clearTimeout(timer);
-      if (debounceTimer) clearTimeout(debounceTimer);
       observer.disconnect();
-      mutationObserver.disconnect();
     };
   }, []);
 

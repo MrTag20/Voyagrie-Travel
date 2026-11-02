@@ -41,7 +41,6 @@ export const ContactSection: React.FC = () => {
           src="/images/contact-bg.jpg"
           alt="Santorini Sunset Terrace"
           fill
-          priority
           sizes="100vw"
           className="object-cover object-[center_35%]"
         />
@@ -94,7 +93,7 @@ export const ContactSection: React.FC = () => {
         </div>
 
         {/* Integrated Glassmorphism Contact & Consultation Card */}
-        <div className="max-w-5xl rounded-2xl sm:rounded-[32px] bg-[#FFFCF5]/92 backdrop-blur-xl border border-white/70 shadow-[0_24px_70px_rgba(21,47,41,0.25)] p-4 sm:p-8 md:p-10 lg:p-12 transition-all">
+        <div className="max-w-5xl rounded-2xl sm:rounded-[32px] bg-[#FFFCF5]/95 backdrop-blur-md border border-white/70 shadow-[0_20px_50px_rgba(21,47,41,0.2)] p-4 sm:p-8 md:p-10 lg:p-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
             {/* Left Column: Heading, Copy, & Quick Contact Options */}
             <div className="lg:col-span-5 flex flex-col justify-between h-full mb-2 lg:mb-0">

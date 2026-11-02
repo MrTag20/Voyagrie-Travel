@@ -11,17 +11,41 @@ interface HeroVideoProps {
 
 export const HeroVideo: React.FC<HeroVideoProps> = ({ onExplore }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.defaultMuted = true;
-      videoRef.current.muted = true;
-      videoRef.current.play().catch(() => {});
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.defaultMuted = true;
+    video.muted = true;
+    video.play().catch(() => {});
+
+    // Intelligent resource management: pause video when hero is scrolled off-screen
+    // to preserve 100% of device GPU/CPU for buttery smooth page scrolling.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
     }
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative min-h-[92vh] lg:min-h-screen flex items-center pt-28 md:pt-36 pb-24 md:pb-32 overflow-hidden bg-black"
     >
@@ -31,17 +55,24 @@ export const HeroVideo: React.FC<HeroVideoProps> = ({ onExplore }) => {
         <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/60 via-black/35 to-black/20 pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 h-28 z-10 bg-gradient-to-t from-[#F7F4EC] via-[#F7F4EC]/30 to-transparent pointer-events-none" />
 
-        {/* HTML5 Video Layer spanning the whole screen */}
+        {/* HTML5 Video Layer spanning the whole screen with responsive faststart sources */}
         <video
           ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster={siteConfig.heroPoster}
-          className="w-full h-full object-cover object-center scale-100"
+          disablePictureInPicture
+          disableRemotePlayback
+          className="w-full h-full object-cover object-center scale-100 transform-gpu"
         >
+          <source
+            src={siteConfig.heroVideoMobile}
+            media="(max-width: 768px)"
+            type="video/mp4"
+          />
           <source src={siteConfig.heroVideo} type="video/mp4" />
         </video>
       </div>

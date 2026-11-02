@@ -176,7 +176,6 @@ export const WhyTravelWithUs: React.FC<WhyTravelWithUsProps> = ({
                 src="/images/cappadocia-balloons.jpg"
                 alt="Traveller looking at Cappadocia hot air balloons at sunrise"
                 fill
-                priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 35vw, 400px"
                 className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
               />

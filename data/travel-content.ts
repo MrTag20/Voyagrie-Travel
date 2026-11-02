@@ -52,6 +52,7 @@ export const siteConfig = {
   phone: "+1 (646) 870-9033",
   phoneDisplay: "Call local expert",
   heroVideo: "/videos/hero-video.mp4",
+  heroVideoMobile: "/videos/hero-video-mobile.mp4",
   heroPoster: "/images/hero-poster.webp",
 };
 

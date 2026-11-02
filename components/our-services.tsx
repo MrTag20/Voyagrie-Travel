@@ -95,12 +95,11 @@ export const OurServices: React.FC<OurServicesProps> = ({
           src="/images/services-bg.jpg"
           alt="Lush green rainforest and mist covered mountains"
           fill
-          priority
           sizes="100vw"
           className="object-cover object-center scale-105"
         />
         {/* Dark atmospheric gradient matching the screenshot */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1E19]/92 via-[#0C241E]/85 to-[#081814]/95 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1E19]/92 via-[#0C241E]/85 to-[#081814]/95" />
       </div>
 
       <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
