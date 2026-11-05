@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { Mountain, CalendarDays, ShieldCheck, Headset, ArrowRight, Sparkles } from "lucide-react";
+import { RotatingGlobe } from "@/components/rotating-globe";
 
 interface WhyTravelWithUsProps {
   onOurStory?: () => void;
@@ -13,6 +14,7 @@ export const WhyTravelWithUs: React.FC<WhyTravelWithUsProps> = ({
   onOurStory,
   onExploreFeature,
 }) => {
+  const [visualMode, setVisualMode] = useState<"globe" | "photo">("globe");
   const features = [
     {
       id: "curated",
@@ -168,34 +170,68 @@ export const WhyTravelWithUs: React.FC<WhyTravelWithUsProps> = ({
             </div>
           </div>
 
-          {/* CENTER COLUMN: Arched Cappadocia Visual Card */}
-          <div className="lg:col-span-4 flex justify-center">
-            <div className="relative w-full max-w-[340px] sm:max-w-[370px] aspect-[3.7/5] rounded-2xl rounded-tr-[110px] overflow-hidden shadow-2xl border border-[#E9E1D2] group">
-              {/* Image */}
-              <Image
-                src="/images/cappadocia-balloons.jpg"
-                alt="Traveller looking at Cappadocia hot air balloons at sunrise"
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 35vw, 400px"
-                className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-              />
+          {/* CENTER COLUMN: 3D Circling Globe Structure */}
+          <div className="lg:col-span-4 flex flex-col items-center justify-center my-6 lg:my-0">
+            {/* View Mode Toggle Pill (3D Globe / Cappadocia) */}
+            <div className="mb-4 inline-flex items-center p-1 rounded-full bg-[#EEE8DC] border border-[#DCD4C6]/80 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setVisualMode("globe")}
+                className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  visualMode === "globe"
+                    ? "bg-[#173B32] text-white shadow-xs"
+                    : "text-[#666B64] hover:text-[#152F29]"
+                }`}
+              >
+                <span>🌍 3D Globe</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setVisualMode("photo")}
+                className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  visualMode === "photo"
+                    ? "bg-[#173B32] text-white shadow-xs"
+                    : "text-[#666B64] hover:text-[#152F29]"
+                }`}
+              >
+                <span>📷 Cappadocia</span>
+              </button>
+            </div>
 
-              {/* Bottom gradient overlay for script text legibility */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
-
-              {/* Cursive handwritten overlay matching reference */}
-              <div className="absolute inset-0 p-6 flex flex-col justify-end pointer-events-none select-none">
-                <div className="transform -rotate-2">
-                  <p className="font-script text-white text-2xl sm:text-3xl leading-snug drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] font-normal">
-                    Open People,
-                    <br />
-                    Gentle Places,
+            {visualMode === "globe" ? (
+              <div className="flex flex-col items-center animate-fadeIn">
+                <RotatingGlobe />
+                <div className="mt-6 text-center pointer-events-none select-none transform -rotate-2">
+                  <p className="font-script text-[#BE6543] text-2xl sm:text-3xl leading-snug drop-shadow-xs font-normal">
+                    Open People, Gentle Places,
                     <br />
                     Brighter Stories
                   </p>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="relative w-full max-w-[340px] sm:max-w-[370px] aspect-[3.7/5] rounded-2xl rounded-tr-[110px] overflow-hidden shadow-2xl border border-[#E9E1D2] group animate-fadeIn">
+                <Image
+                  src="/images/cappadocia-balloons.jpg"
+                  alt="Traveller looking at Cappadocia hot air balloons at sunrise"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 35vw, 400px"
+                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end pointer-events-none select-none">
+                  <div className="transform -rotate-2">
+                    <p className="font-script text-white text-2xl sm:text-3xl leading-snug drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] font-normal">
+                      Open People,
+                      <br />
+                      Gentle Places,
+                      <br />
+                      Brighter Stories
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* RIGHT COLUMN: 4 Feature Items */}
