@@ -65,3 +65,4 @@ export const RotatingGlobe: React.FC<RotatingGlobeProps> = ({ className = "" }) 
     </div>
   );
 };
+
